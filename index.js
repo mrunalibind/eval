@@ -11,6 +11,28 @@ app.use(auth)
 let {postRouter}=require("./routes/post_route")
 app.use("/posts",postRouter)
 
+
+
+const passport=require("./google")
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile','email'] }));
+
+app.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/login', session:false }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    console.log(req.user)
+    res.redirect('/');
+  });
+
+app.get("/",(req,res)=>{
+    res.send("Home Page")
+})
+
+
+
+
 app.listen(process.env.port,async(req,res)=>{
     try {
         await connection
